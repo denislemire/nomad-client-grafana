@@ -15,7 +15,7 @@
       }
     ]
   },
-  "description": "Nomad client metrics from external agents (CircleCI executors). Scales to any number of clients via the instance variable.",
+  "description": "Nomad client metrics from external agents (CI executors, GPU workers, bare-metal clients). Scales to any number of clients via the instance variable.",
   "editable": true,
   "fiscalYearStartMonth": 0,
   "graphTooltip": 1,
@@ -1393,8 +1393,8 @@
   "schemaVersion": 39,
   "tags": [
     "nomad",
-    "ehws",
-    "circleci"
+    "prometheus",
+    "client"
   ],
   "templating": {
     "list": [
@@ -1429,6 +1429,6 @@
   },
   "timezone": "browser",
   "title": "Nomad Clients",
-  "uid": "ehws-nomad-clients",
+  "uid": "nomad-clients",
   "version": 1
 }

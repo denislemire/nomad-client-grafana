@@ -1,19 +1,41 @@
-# ehws-grafana-dashboards
+# nomad-client-grafana
 
-Public Grafana dashboards for the [EhWS](https://github.com/denislemire/ehws-infra) home lab.
+Grafana dashboard for **external Nomad clients** — agents that run outside the Nomad server cluster (GPU hosts, CI executors, bare-metal workers, etc.).
 
-Dashboards in `grafana/` are synced into EhWS Grafana via **Git Sync** (Grafana provisioning app).
+Works with any Prometheus that scrapes Nomad’s built-in metrics endpoint (`/v1/metrics?format=prometheus` on port 4646). The **Client** variable lists every scraped `instance`; one client or many.
 
-## Dashboards
+## Dashboard
 
 | File | UID | Description |
 |------|-----|-------------|
-| `grafana/nomad-clients.json` | `ehws-nomad-clients` | External Nomad clients (CircleCI executors on Pascal, etc.) |
+| `grafana/nomad-clients.json` | `nomad-clients` | Allocations, tasks, host resources, TLS cert expiry, agent runtime |
 
 ## Prometheus
 
-Nomad client scrape config lives in [ehws-infra](https://github.com/denislemire/ehws-infra) (`clusters/ehws/monitoring/nomad-client-scrape-config.yaml`).
+Example scrape (static clients):
+
+```yaml
+# Prometheus Operator ScrapeConfig (illustrative)
+spec:
+  jobName: nomad-client
+  metricsPath: /v1/metrics
+  params:
+    format: [prometheus]
+  staticConfigs:
+    - targets: ["10.0.0.30:4646"]
+      labels:
+        nomad_client: my-executor-1
+  relabelings:
+    - sourceLabels: [nomad_client]
+      targetLabel: instance
+```
+
+Nomad must expose Prometheus metrics (`telemetry { prometheus_metrics = true }` and client node/allocation metrics as needed). See [HashiCorp: Monitor Nomad](https://developer.hashicorp.com/nomad/docs/monitor).
+
+## Grafana Git Sync
+
+Point [Grafana Git Sync](https://grafana.com/docs/grafana/latest/as-code/observability-as-code/git-sync/) at this repo with path `grafana/`. Read-only sync is enough if you only consume the dashboard from Git.
 
 ## Contributing
 
-Edit JSON under `grafana/` and merge to `main`. EhWS Grafana polls this repo (default 60s) or receives GitHub webhooks when configured.
+Edit JSON under `grafana/` and merge to `main`.
