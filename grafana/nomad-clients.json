@@ -326,7 +326,7 @@
             "type": "prometheus",
             "uid": "prometheus"
           },
-          "expr": "min((nomad_agent_tls_cert_expiration_seconds{job=\"nomad-client\",instance=~\"$instance\"} - time()) / 86400)",
+          "expr": "min(nomad_agent_tls_cert_expiration_seconds{job=\"nomad-client\",instance=~\"$instance\"} / 86400)",
           "refId": "A"
         }
       ],
